@@ -23,6 +23,7 @@ enum BizStepType {
   o departing 
   o packing 
   o shipping 
+  o receiving 
 }
 
 // 业务处置类型
@@ -66,6 +67,7 @@ concept  QuantityElement{
 --> epcClass epcClass
 o Double quantity
 o String  uom
+
 }
 
 // EPCIS报文类型资产抽象
@@ -146,7 +148,7 @@ asset epcTracking identified by id{
 asset epcClassTracking identified by id{
   o String id
    o Integer status
-  o QuantityElement quantityElement
+    o QuantityElement quantityElement
   --> Party Owner
 }
 
