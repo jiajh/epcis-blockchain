@@ -16,6 +16,7 @@
 
 namespace org.gs1cn
 
+// 
 enum BizStepType {
   o accepting 
   o arriving 
@@ -24,46 +25,50 @@ enum BizStepType {
   o shipping 
 }
 
-/**
- * The status of a shipment
- */
+// 业务处置类型
 enum DispositionType {
   o in_progress
   o in_transit
   o active 
 }
 
-
+// 抽象捕获事件事务
 abstract transaction captureEvent {
  
 }
 
-
+// 提交捕获对象事件事务
 transaction  captureObjectEvent extends captureEvent{
   -->ObjectEvent epcis
 
 }
 
+// 提交对象聚合事件事务
 transaction  captureAggregationEvent extends captureEvent{
   -->ObjectEvent epcis
 
 }
 
+// 提交转换事件事务
 transaction  captureTransformationEvent extends captureEvent{
   -->ObjectEvent epcis
 
 }
 
+// 提交业务事件事务
 transaction  captureTransactionEvent extends captureEvent{
   -->ObjectEvent epcis
 
 }
 
-concept  quantityElement{
+// 组合数量类型对象，条码加批次和数量
+concept  QuantityElement{
 --> epcClass epcClass
 o Double quantity
 o String  uom
 }
+
+// EPCIS报文类型资产抽象
 abstract asset EPCISDocument identified by eventID{
   o String eventID
   o DateTime eventTime
@@ -76,18 +81,27 @@ abstract asset EPCISDocument identified by eventID{
   
 }
 
+// 对象类型资产
 asset  ObjectEvent extends EPCISDocument{
 --> Party  source optional
 --> Party  destination optional
-o quantityElement[] quantityList optional
+o QuantityElement[] quantityList optional
 o epc[] epcList optional
 }
+
+// 聚合事件类型资产
 asset  	AggregationEvent extends EPCISDocument{
 }
+
+// 转换事件类型资产
 asset    TransformationEvent extends EPCISDocument{
 }
+
+// 事务类型资产
 asset    TransactionEvent extends EPCISDocument{
 }
+
+// 复合地址类型
 concept Address {
   o String city optional
   o String country
@@ -95,7 +109,7 @@ concept Address {
   o String zip optional
 }
 
-
+// 定义参与方，使用GLN作为企业标识
  participant Party identified by GLN {
   o String GLN
   o String email
@@ -103,13 +117,24 @@ concept Address {
 
 }
 
+// 定义单品资产
 asset epc identified by epc{
   o String epc
   o String Name optional
 }
+
+// 定义单品集合
 concept epcList{
   --> epc[] epcList
 }
+
+// 定义批次级别资产
+asset epcClass identified by epcClass{
+  o String epcClass
+  o String Name optional
+}
+
+// 定义单品库存
 asset epcTracking identified by id{
   o String id
   o Integer status
@@ -117,13 +142,11 @@ asset epcTracking identified by id{
   --> Party Owner
 }
 
-asset epcClass identified by epcClass{
-  o String epcClass
-  o String Name optional
-}
+// 定义批次产品库存
 asset epcClassTracking identified by id{
   o String id
-  o quantityElement quantityElement
+   o Integer status
+  o QuantityElement quantityElement
   --> Party Owner
 }
 
