@@ -1,0 +1,8 @@
+query getAllGoodsByEPCClass{ 
+  description: "Select  goods from epcClassTracking" 
+  statement:  
+    SELECT org.gs1cn.epcClassTracking  
+          WHERE (quantityElement.epcClass == _$epcClass)
+} 
+ 
+
